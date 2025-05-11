@@ -1,0 +1,55 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    paths-ignore:
+    - '**.md'
+    - '**.po'
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        # Legacy configs
+        - {os: ubuntu-20.04, python-version: '3.10', qt-binding: pyqt5, piptweak: 'pip install pygit2==1.14.1 pygments==2.12'}
+        - {os: ubuntu-20.04, python-version: '3.10', qt-binding: pyqt5, piptweak: 'pip uninstall -y pygments'}
+        # Semi-legacy configs
+        - {os: ubuntu-latest, python-version: '3.11', qt-binding: pyqt6}
+        - {os: ubuntu-latest, python-version: '3.12', qt-binding: pyqt6}
+        # Up-to-date configs
+        - {os: ubuntu-latest, python-version: '3.13', qt-binding: pyqt6, testenv: 'TESTFLATPAK=1'}
+        - {os: ubuntu-latest, python-version: '3.13', qt-binding: pyside6, testenv: 'TESTFLATPAK=1'}
+        - {os: macos-latest, python-version: '3.13', qt-binding: pyqt6}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Qt 5 dependencies
+      if: ${{ runner.os == 'Linux' && matrix.qt-binding == 'pyqt5' }}
+      run: sudo apt install libqt5gui5
+
+    - name: Qt 6 dependencies
+      if: ${{ runner.os == 'Linux' && matrix.qt-binding != 'pyqt5' }}
+      run: sudo apt install libqt6gui6
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+
+    - name: Pip dependencies
+      run: |
+        pip install -e .[${{ matrix.qt-binding }},pygments,test]
+        ${{ matrix.piptweak }}
+
+    - run: ruff check
+
+    - name: Unit tests
+      run: TESTNET=1 ${{ matrix.testenv }} PYTEST_QT_API=${{ matrix.qt-binding }} ./test.sh

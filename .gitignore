@@ -1,0 +1,11 @@
+__pycache__
+.DS_Store
+.coverage
+build/
+dist/
+gitfourchette.egg-info/
+
+/.idea/*
+!/.idea/icon.svg
+!/.idea/modules.xml
+!/.idea/runConfigurations/

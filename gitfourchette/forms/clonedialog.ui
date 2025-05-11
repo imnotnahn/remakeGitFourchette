@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CloneDialog</class>
+ <widget class="QDialog" name="CloneDialog">
+  <property name="windowModality">
+   <enum>Qt::WindowModality::NonModal</enum>
+  </property>
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>340</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Clone repository</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+   </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="urlLabel">
+     <property name="text">
+      <string>Remote &amp;URL:</string>
+     </property>
+     <property name="buddy">
+      <cstring>urlEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <layout class="QHBoxLayout" name="urlLayout">
+     <item>
+      <widget class="QComboBox" name="urlEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+       <property name="insertPolicy">
+        <enum>QComboBox::InsertPolicy::NoInsert</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="ProtocolButton" name="protocolButton">
+       <property name="text">
+        <string notr="true">https</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="pathLabel">
+     <property name="text">
+      <string>Clone in&amp;to:</string>
+     </property>
+     <property name="buddy">
+      <cstring>pathEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <layout class="QHBoxLayout" name="pathLayout">
+     <item>
+      <widget class="QLineEdit" name="pathEdit"/>
+     </item>
+     <item>
+      <widget class="QToolButton" name="browseButton">
+       <property name="text">
+        <string>&amp;Browse…</string>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="optionsLabel">
+     <property name="text">
+      <string>Options:</string>
+     </property>
+     <property name="buddy">
+      <cstring>recurseSubmodulesCheckBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QCheckBox" name="recurseSubmodulesCheckBox">
+     <property name="text">
+      <string>Initialize submodules recursively (if any)</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <layout class="QHBoxLayout" name="shallowCloneLayout">
+     <item>
+      <widget class="QCheckBox" name="shallowCloneCheckBox">
+       <property name="toolTip">
+        <string>&lt;p&gt;Tick this to download just the latest commits, not the entire history of the repository.</string>
+       </property>
+       <property name="text">
+        <string notr="true">(SHALLOW CLONE)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="shallowCloneDepthSpinBox">
+       <property name="showGroupSeparator" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="prefix">
+        <string/>
+       </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>999999</number>
+       </property>
+       <property name="stepType">
+        <enum>QAbstractSpinBox::StepType::AdaptiveDecimalStepType</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="shallowCloneSuffix">
+       <property name="text">
+        <string notr="true">(SUFFIX)</string>
+       </property>
+       <property name="buddy">
+        <cstring>shallowCloneDepthSpinBox</cstring>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="1">
+    <widget class="KeyFilePickerCheckBox" name="keyFilePicker">
+     <property name="text">
+      <string>Log in with custom &amp;key file</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Policy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>16</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="QGroupBox" name="statusGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Status</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="StatusForm" name="statusForm" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KeyFilePickerCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>gitfourchette.forms.keyfilepickercheckbox</header>
+  </customwidget>
+  <customwidget>
+   <class>StatusForm</class>
+   <extends>QWidget</extends>
+   <header>gitfourchette.forms.statusform</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ProtocolButton</class>
+   <extends>QToolButton</extends>
+   <header>gitfourchette.forms.protocolbutton</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>urlEdit</tabstop>
+  <tabstop>protocolButton</tabstop>
+  <tabstop>pathEdit</tabstop>
+  <tabstop>browseButton</tabstop>
+  <tabstop>recurseSubmodulesCheckBox</tabstop>
+  <tabstop>shallowCloneCheckBox</tabstop>
+  <tabstop>shallowCloneDepthSpinBox</tabstop>
+  <tabstop>keyFilePicker</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>CloneDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>290</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>269</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
