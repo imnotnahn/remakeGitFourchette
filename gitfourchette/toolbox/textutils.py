@@ -22,6 +22,26 @@ _stripAccelerators = re.compile(r"&(?!&)")
 _titleLowercaseWords = {"a", "an", "and", "as", "but", "by", "in", "of", "on", "or", "the", "to"}
 
 
+def formatBytes(size: float) -> str:
+    """
+    Format a byte size with appropriate units (B, KiB, MiB, GiB).
+    
+    Args:
+        size: The size in bytes/kibibytes depending on the context
+        
+    Returns:
+        A formatted string with appropriate units
+    """
+    if size < 1024:
+        return f"{size:.0f} B"
+    elif size < 1024 * 1024:
+        return f"{size/1024:.1f} KiB"
+    elif size < 1024 * 1024 * 1024:
+        return f"{size/(1024*1024):.1f} MiB"
+    else:
+        return f"{size/(1024*1024*1024):.1f} GiB"
+
+
 def toLengthVariants(pipeSeparatedString: str) -> str:
     return pipeSeparatedString.replace("|", "\x9C")
 
@@ -83,7 +103,7 @@ def paragraphs(*args: str | list[str]) -> str:
 
 def _quotePattern(text, htm=True):
     # Typographic quotes in your language. Will surround user strings throughout the app.
-    q = _("“{0}”")
+    q = _("\"{0}\"")
     if not htm:
         q = html.unescape(q)
     return q.format(text)

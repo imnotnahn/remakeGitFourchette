@@ -80,7 +80,7 @@ from .qtutils import (
 )
 from .textutils import (
     toLengthVariants,
-    escape, escamp, paragraphs, messageSummary, elide,
+    escape, escamp, paragraphs, messageSummary, elide, formatBytes,
     toRoomyUL,
     toTightUL,
     linkify,

@@ -88,7 +88,7 @@ class IdentityDialog(QDialog):
         
         # Add the PAT group to the main layout, before the buttonBox
         mainLayout = self.layout()
-        mainLayout.insertWidget(mainLayout.count()-1, patGroupBox)
+        mainLayout.setWidget(6, QFormLayout.ItemRole.SpanningRole, patGroupBox)
         
         # Store references
         self.patGroupBox = patGroupBox
