@@ -724,13 +724,36 @@ class MainWindow(QMainWindow):
             parentRepo = pygit2.discover_repository(parentDetectionPath) or ""
 
         if not detectParentRepo or not parentRepo:
-            if not allowNonEmptyDirectory and os.path.exists(path) and os.listdir(path):
+            # Kiểm tra nếu thư mục không trống
+            if not allowNonEmptyDirectory and os.path.exists(path) and os.path.isdir(path) and os.listdir(path):
                 message = _("Are you sure you want to initialize a Git repository in {0}? "
                             "This directory isn't empty.", bquo(path))
-                askConfirmation(self, _("Directory isn't empty"), message, messageBoxIcon='warning',
-                                callback=lambda: self.newRepo(path, detectParentRepo, allowNonEmptyDirectory=True))
+                
+                # Sử dụng QMessageBox trực tiếp thay vì dùng askConfirmation với callback
+                qmb = QMessageBox(
+                    QMessageBox.Icon.Warning,
+                    _("Directory isn't empty"),
+                    message,
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                    self
+                )
+                qmb.setWindowModality(Qt.WindowModality.WindowModal)
+                
+                # Thay đổi text nút để rõ ràng hơn
+                qmb.button(QMessageBox.StandardButton.Yes).setText(_("Create anyway"))
+                qmb.button(QMessageBox.StandardButton.No).setText(_("Cancel"))
+                
+                # Xử lý kết quả trực tiếp
+                if qmb.exec() == QMessageBox.StandardButton.Yes:
+                    try:
+                        pygit2.init_repository(path)
+                        self.openRepo(path, exactMatch=True)
+                    except Exception as exc:
+                        message = _("Couldn't create an empty repository in {0}.", bquo(path))
+                        excMessageBox(exc, _("New repository"), message, parent=self, icon='warning')
                 return
-
+            
+            # Thư mục trống hoặc đã được xác nhận 
             try:
                 pygit2.init_repository(path)
                 return self.openRepo(path, exactMatch=True)
@@ -749,12 +772,21 @@ class MainWindow(QMainWindow):
                 message = paragraphs(
                     _("A repository already exists here:"),
                     escape(compactPath(parentWorkdir)))
-                qmb = asyncMessageBox(
-                    self, 'information', _("Repository already exists"), message,
-                    QMessageBox.StandardButton.Open | QMessageBox.StandardButton.Cancel)
+                
+                # Sử dụng QMessageBox trực tiếp thay vì asyncMessageBox
+                qmb = QMessageBox(
+                    QMessageBox.Icon.Information,
+                    _("Repository already exists"),
+                    message,
+                    QMessageBox.StandardButton.Open | QMessageBox.StandardButton.Cancel,
+                    self
+                )
+                qmb.setWindowModality(Qt.WindowModality.WindowModal)
                 qmb.button(QMessageBox.StandardButton.Open).setText(_("&Open existing repo"))
-                qmb.accepted.connect(lambda: self.openRepo(parentWorkdir, exactMatch=True))
-                qmb.show()
+                
+                # Xử lý kết quả ngay sau khi đóng dialog
+                if qmb.exec() == QMessageBox.StandardButton.Open:
+                    self.openRepo(parentWorkdir, exactMatch=True)
             else:
                 displayPath = compactPath(path)
                 commonLength = len(os.path.commonprefix([displayPath, compactPath(parentWorkdir)]))
@@ -774,19 +806,29 @@ class MainWindow(QMainWindow):
                     prettyPath,
                     _("Are you sure you want to create {0} within the existing repo?", hquoe(myBasename)))
 
-                qmb = asyncMessageBox(
-                    self, 'information', _("Repository found in parent folder"), message,
-                    QMessageBox.StandardButton.Open | QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
-
+                # Sử dụng QMessageBox trực tiếp thay vì asyncMessageBox
+                qmb = QMessageBox(
+                    QMessageBox.Icon.Information,
+                    _("Repository found in parent folder"),
+                    message,
+                    QMessageBox.StandardButton.Open | QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.Cancel,
+                    self
+                )
+                qmb.setWindowModality(Qt.WindowModality.WindowModal)
+                
+                # Thiết lập text nút
                 openButton = qmb.button(QMessageBox.StandardButton.Open)
                 openButton.setText(_("&Open {0}", lquoe(parentBasename)))
-                openButton.clicked.connect(lambda: self.openRepo(parentWorkdir, exactMatch=True))
-
-                createButton = qmb.button(QMessageBox.StandardButton.Ok)
+                
+                createButton = qmb.button(QMessageBox.StandardButton.Yes)
                 createButton.setText(_("&Create {0}", lquoe(myBasename)))
-                createButton.clicked.connect(lambda: self.newRepo(path, detectParentRepo=False))
-
-                qmb.show()
+                
+                # Xử lý kết quả ngay sau khi đóng dialog
+                result = qmb.exec()
+                if result == QMessageBox.StandardButton.Open:
+                    self.openRepo(parentWorkdir, exactMatch=True)
+                elif result == QMessageBox.StandardButton.Yes:
+                    self.newRepo(path, detectParentRepo=False)
 
     def cloneDialog(self, initialUrl: str = ""):
         dlg = CloneDialog(initialUrl, self)

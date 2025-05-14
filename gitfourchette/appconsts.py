@@ -16,6 +16,6 @@ APP_IDENTIFIER = "org.gitfourchette.gitfourchette"
 ####################################
 
 APP_FREEZE_COMMIT = "unknown"
-APP_FREEZE_DATE = "2025-05-12 16:46"
+APP_FREEZE_DATE = "2025-05-14 15:55"
 APP_FREEZE_QT = "pyqt6"
 # END_FREEZE_CONSTS
