@@ -1,8 +1,14 @@
+#!/usr/bin/env python3
 # -----------------------------------------------------------------------------
-# Copyright (C) 2024 Iliyas Jorio.
+# Copyright (C) 2025 Iliyas Jorio.
 # This file is part of GitFourchette, distributed under the GNU GPL v3.
 # For full terms, see the included LICENSE file.
 # -----------------------------------------------------------------------------
+
+# Import our SSL certificate configuration module first, before any other imports
+from gitfourchette import ssl_certs
+# Import our Git authentication module
+from gitfourchette import git_auth
 
 import logging
 import signal
